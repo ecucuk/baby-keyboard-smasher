@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>ui/images/game-logo.png</file>
+    </qresource>
+</RCC>
