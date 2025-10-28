@@ -16,27 +16,37 @@
 
 namespace game::gui::shape {
 
+/**
+ * @brief The enumeration for the types of shapes.
+ */
 enum class ShapeType { CIRCLE, SQUARE, TRIANGLE, STAR };
 
+/**
+ * @brief Abstract base class for all shapes.
+ *
+ * Provides the interface and base functionality for shape classes.
+ */
 class IShape {
  public:
   /**
    * @brief Constructor
-   * @param posX X koordinatı
-   * @param posY Y koordinatı
-   * @param velX X hızı
-   * @param velY Y hızı
-   * @param sz Boyut
-   * @param col Renk
-   * @param key Basılan tuş
+   * @param posX X coordinate
+   * @param posY Y coordinate
+   * @param velX X velocity
+   * @param velY Y velocity
+   * @param sz Size of the shape
+   * @param color1 Gradient start color
+   * @param color2 Gradient end color
+   * @param key Letter displayed inside the shape
    */
-  IShape(float posX, float posY, float velX, float velY, int sz, SDL_Color col,
-         char key)
+  IShape(float posX, float posY, float velX, float velY, int sz, SDL_Color color1,
+         SDL_Color color2, std::string key)
       : x_y(std::make_pair(posX, posY)),
         vx_vy(std::make_pair(velX, velY)),
         size(sz),
-        color(col),
-        letter(key),
+        startColor(color1),
+        endColor(color2),
+        letter(std::move(key)),
         lifetime(3.0f),
         rotation(0),
         rotationSpeed((rand() % 200 - 100) / 50.0f) {}
@@ -44,16 +54,17 @@ class IShape {
   virtual ~IShape() = default;
 
   /**
-   * @brief Şekli çizer (saf sanal fonksiyon)
+   * @brief Draws the shape on the screen. (pure virtual)
    * @param renderer SDL renderer
+   * @param font Font used for rendering the letter
    */
   virtual void draw(SDL_Renderer* renderer, TTF_Font* font) = 0;
 
   /**
-   * @brief Şekli günceller
-   * @param deltaTime Frame süresi (saniye)
-   * @param screenWidth Ekran genişliği
-   * @param screenHeight Ekran yüksekliği
+   * @brief Updates the shape's state (position, rotation, lifetime).
+   * @param deltaTime Frame time in seconds
+   * @param screenWidth Width of the screen
+   * @param screenHeight Height of the screen
    */
   virtual void update(float deltaTime, int screenWidth, int screenHeight) {
     x_y.first += vx_vy.first * deltaTime;
@@ -61,44 +72,50 @@ class IShape {
     rotation += rotationSpeed * deltaTime;
     lifetime -= deltaTime;
 
-    // Ekran sınırlarında zıplama
+    // Bounce back at the screen edges
     if (x_y.first < 0 || x_y.first > screenWidth) vx_vy.first *= -1;
     if (x_y.second < 0 || x_y.second > screenHeight) vx_vy.second *= -1;
   }
 
   /**
-   * @brief Şeklin yaşam süresinin bitip bitmediğini kontrol eder
-   * @return true Yaşam süresi bitti
+   * @brief Checks if the shape's lifetime has expired.
+   * @return true if its lifetime is over
    */
   bool isDead() const { return lifetime <= 0; }
 
   /**
-   * @brief Mevcut transparanlığı hesaplar
-   * @return Uint8 Alpha değeri (0-255)
+   * @brief Calculates the current alpha (transparency) value.
+   * @return Uint8 Alpha value (0-255)
    */
   Uint8 getAlpha() const { return static_cast<Uint8>(255 * (lifetime / 3.0f)); }
 
  protected:
   /**
-   * @brief Harfi çizer
+   * @brief Draws the given letter in the center of the shape.
    * @param renderer SDL renderer
+   * @param font Font to use for rendering
+   * @param letter The letter to render
+   * @param x X coordinate of the letter
+   * @param y Y coordinate of the letter
+   * @param size Size of the bounding shape
+   * @param alpha Alpha (transparency) value
    */
-  void drawLetter(SDL_Renderer* renderer, TTF_Font* font, char letter, float x,
-                  float y, float size, Uint8 alpha) {
+  void drawLetter(SDL_Renderer* renderer, TTF_Font* font,
+                  const std::string& letter, float x, float y, float size,
+                  Uint8 alpha) {
     if (!renderer || !font) return;
 
-    char text[2] = {letter, '\0'};
+    std::string text{letter};
 
     SDL_Color textColor = {255, 255, 255, alpha};
 
-    // SDL3_ttf: length parametresi eklendi
     SDL_Surface* textSurface =
-        TTF_RenderText_Blended(font, text, strlen(text), textColor);
+        TTF_RenderText_Blended(font, text.c_str(), text.length(), textColor);
     if (!textSurface) return;
 
     SDL_Texture* textTexture =
         SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_DestroySurface(textSurface);  // SDL3: SDL_FreeSurface yerine
+    SDL_DestroySurface(textSurface);
 
     if (!textTexture) return;
 
@@ -109,15 +126,16 @@ class IShape {
     SDL_DestroyTexture(textTexture);
   }
 
-  std::pair<float, float> x_y;
-  std::pair<float, float> vx_vy;
-  int size;
-  SDL_Color color;
-  ShapeType type;
-  char letter;
-  float lifetime;
-  float rotation;
-  float rotationSpeed;
+  std::pair<float, float> x_y;   ///< Position (X, Y)
+  std::pair<float, float> vx_vy; ///< Velocity (X, Y)
+  int size;                      ///< Size of the shape
+  SDL_Color startColor;          ///< Gradient start color
+  SDL_Color endColor;            ///< Gradient end color
+  ShapeType type;                ///< The type of the shape
+  std::string letter;            ///< Letter displayed in the shape
+  float lifetime;                ///< Remaining lifetime in seconds
+  float rotation;                ///< Current rotation (unused)
+  float rotationSpeed;           ///< Speed of rotation (unused)
 };
 
 }  // namespace game::gui::shape

@@ -6,45 +6,36 @@
 //
 
 #ifndef SHAPESFACTORY_H
-#define SHAPESFACTORY_H
+#define SHAPESFACTORY_H 1U
 
-#include <stdio.h>
-
-#include "Shapes.h"
+#include <memory>
+#include <string>
+#include "IShape.h"
+#include "Color.h"
 
 namespace game::gui::shape {
+
 /**
- * @brief Şekil fabrika sınıfı
+ * @brief The shape factory class.
  *
- * Rastgele şekiller oluşturur
+ * Provides methods for creating and managing shape objects.
  */
 class ShapeFactory {
  public:
+    ShapeFactory() = default;
+    ~ShapeFactory() = default;
+    
   /**
-   * @brief Rastgele bir şekil oluşturur
-   * @param screenWidth Ekran genişliği
-   * @param screenHeight Ekran yüksekliği
-   * @param key Basılan tuş
-   * @return unique_ptr<IShape> Oluşturulan şekil
+   * @brief Creates a shape with random properties.
+   * @param screenWidth Width of the screen
+   * @param screenHeight Height of the screen
+   * @param key The key pressed (used as a letter in the shape)
+   * @return unique_ptr<IShape> The newly created shape
    */
-  std::unique_ptr<gui::shape::IShape> createRandom(int screenWidth,
-                                                   int screenHeight, char key);
-  /**
-   * @brief Belirli bir türde şekil döndürür
-   * @param type Şekil türü
-   * @param key Basılan tuş
-   * @return unique_ptr<IShape> Oluşturulan şekil
-   */
-  std::unique_ptr<gui::shape::IShape> getShape(ShapeType type, char key);
-
-  /**
-   * @brief Belirli bir türdeki şekli kaldırır
-   * @param type Şekil türü
-   * @param key Basılan tuş
-   * @return bool Şekil başarıyla kaldırıldıysa true
-   */
-  bool removeShape(ShapeType type, char key);
+  std::unique_ptr<gui::shape::IShape> createRandom(
+      int screenWidth, int screenHeight, const std::string& key);
 };
+
 }  // namespace game::gui::shape
 
 #endif  // !SHAPESFACTORY_H

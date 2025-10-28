@@ -43,7 +43,6 @@
 /* Begin PBXFileReference section */
 		5267E8EF2EAE35790097AE28 /* libSDL3_image.0.2.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3_image.0.2.4.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3_image/3.2.4/lib/libSDL3_image.0.2.4.dylib; sourceTree = "<group>"; };
 		5267E8F22EAE359E0097AE28 /* libSDL3_ttf.0.2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3_ttf.0.2.2.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib/libSDL3_ttf.0.2.2.dylib; sourceTree = "<group>"; };
-		52A06F192EB1126D00FB508F /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		52E6FD8D2EAD6EC000085036 /* libSDL3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL3.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sdl3/3.2.24/lib/libSDL3.0.dylib; sourceTree = "<group>"; };
 		52F12B222EAD5B640064F054 /* BabySmasherGame */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BabySmasherGame; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -70,14 +69,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		52A06F1A2EB1126D00FB508F /* font */ = {
-			isa = PBXGroup;
-			children = (
-				52A06F192EB1126D00FB508F /* OpenSans-Bold.ttf */,
-			);
-			path = font;
-			sourceTree = "<group>";
-		};
 		52E6FD8C2EAD6EC000085036 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -94,7 +85,6 @@
 				52F12B242EAD5B640064F054 /* BabySmasherGame */,
 				52E6FD8C2EAD6EC000085036 /* Frameworks */,
 				52F12B232EAD5B640064F054 /* Products */,
-				52A06F1A2EB1126D00FB508F /* font */,
 			);
 			sourceTree = "<group>";
 		};
@@ -318,11 +308,12 @@
 					/opt/homebrew/Cellar/sdl3_image/3.2.4/lib,
 					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lSDL3",
 					"-lSDL3_ttf",
+					"-lSDL3_image",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -359,11 +350,12 @@
 					/opt/homebrew/Cellar/sdl3_image/3.2.4/lib,
 					/opt/homebrew/Cellar/sdl3_ttf/3.2.2/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lSDL3",
 					"-lSDL3_ttf",
+					"-lSDL3_image",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
