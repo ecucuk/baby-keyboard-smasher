@@ -8,10 +8,8 @@
 #ifndef ISHAPE_H
 #define ISHAPE_H 1U
 
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_textengine.h>
-#include <SDL3_ttf/SDL_ttf.h>
-
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include "Color.h"
 
 namespace game::gui::shape {
@@ -109,20 +107,21 @@ class IShape {
 
     SDL_Color textColor = {255, 255, 255, alpha};
 
-    SDL_Surface* textSurface =
-        TTF_RenderText_Blended(font, text.c_str(), text.length(), textColor);
+      SDL_Surface* textSurface =
+          TTF_RenderUTF8_Blended(font, text.c_str(), textColor);
+      
     if (!textSurface) return;
 
     SDL_Texture* textTexture =
         SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_DestroySurface(textSurface);
+    SDL_FreeSurface(textSurface);
 
     if (!textTexture) return;
 
     SDL_FRect dstRect = {x - size / 4.0f, y - size / 4.0f, size / 2.0f,
                          size / 2.0f};
 
-    SDL_RenderTexture(renderer, textTexture, nullptr, &dstRect);
+    SDL_RenderCopyF(renderer, textTexture, nullptr, &dstRect);
     SDL_DestroyTexture(textTexture);
   }
 

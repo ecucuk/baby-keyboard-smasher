@@ -8,7 +8,7 @@
 #ifndef COLOR_H
 #define COLOR_H 1U
 
-#include <SDL3/SDL_pixels.h>
+#include <SDL_pixels.h>
 
 #include <map>
 #include <vector>

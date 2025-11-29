@@ -5,11 +5,12 @@
 //  Created by Ergün CÜCÜK on 26.10.2025.
 //
 
-#include <SDL3_ttf/SDL_ttf.h>
+#include "Shapes.h"
+
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <cmath>
-
-#include "Shapes.h"
 
 namespace game::gui::shape {
 
@@ -29,8 +30,8 @@ static SDL_Color interpolateColor(const SDL_Color& a, const SDL_Color& b,
  */
 void Circle::draw(SDL_Renderer* renderer, TTF_Font* font) {
   int radius = size / 2;
-  float cx = x_y.first;
-  float cy = x_y.second;
+  int cx = static_cast<int>(x_y.first);
+  int cy = static_cast<int>(x_y.second);
   Uint8 alpha = getAlpha();
 
   for (int y = -radius; y <= radius; ++y) {
@@ -41,7 +42,7 @@ void Circle::draw(SDL_Renderer* renderer, TTF_Font* font) {
         float t = dist / radius;
         SDL_Color c = interpolateColor(startColor, endColor, t, alpha);
         SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-        SDL_RenderPoint(renderer, cx + x, cy + y);
+        SDL_RenderDrawPoint(renderer, cx + x, cy + y);
       }
     }
   }
@@ -49,27 +50,20 @@ void Circle::draw(SDL_Renderer* renderer, TTF_Font* font) {
   drawLetter(renderer, font, letter, cx, cy, size, alpha);
 }
 
-/**
- * @brief Kareyi üstten alta linear gradient ile çizer.
- */
 void Square::draw(SDL_Renderer* renderer, TTF_Font* font) {
   int half = size / 2;
   Uint8 alpha = getAlpha();
-
   for (int y = 0; y < size; ++y) {
     float t = static_cast<float>(y) / (size - 1);
     SDL_Color c = interpolateColor(startColor, endColor, t, alpha);
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-    SDL_RenderLine(renderer, x_y.first - half, x_y.second - half + y,
-                   x_y.first + half, x_y.second - half + y);
+    SDL_RenderDrawLine(renderer,
+                       x_y.first - half, x_y.second - half + y,
+                       x_y.first + half, x_y.second - half + y);
   }
-
   drawLetter(renderer, font, letter, x_y.first, x_y.second, size, alpha);
 }
 
-/**
- * @brief Üçgeni tabandan tepeye linear gradient ile çizer.
- */
 void Triangle::draw(SDL_Renderer* renderer, TTF_Font* font) {
   int h = size;
   int baseY = x_y.second + h / 2;
@@ -87,15 +81,12 @@ void Triangle::draw(SDL_Renderer* renderer, TTF_Font* font) {
     int drawY = baseY - y;
 
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-    SDL_RenderLine(renderer, startX, drawY, endX, drawY);
+    SDL_RenderDrawLine(renderer, startX, drawY, endX, drawY);
   }
 
   drawLetter(renderer, font, letter, x_y.first, x_y.second, size, alpha);
 }
 
-/**
- * @brief Star için: çizgiler üzerinde gradient efekti.
- */
 void Star::draw(SDL_Renderer* renderer, TTF_Font* font) {
   const int points = 5;
   const float angleStep = 3.14159f * 2 / points;
@@ -105,30 +96,54 @@ void Star::draw(SDL_Renderer* renderer, TTF_Font* font) {
   float cy = x_y.second;
   Uint8 alpha = getAlpha();
 
-  // Star'ın kenarlarını gradient ile çiz
+  std::vector<SDL_FPoint> vertices;
+
+  // Yıldızın noktalarını hesapla
   for (int i = 0; i < points * 2; i++) {
-    float angle1 = i * angleStep / 2;
-    float angle2 = (i + 1) * angleStep / 2;
-    float r1 = (i % 2 == 0) ? outerRadius : innerRadius;
-    float r2 = ((i + 1) % 2 == 0) ? outerRadius : innerRadius;
+    float angle = i * 3.14159f / points;
+    float r = (i % 2 == 0) ? outerRadius : innerRadius;
+    vertices.push_back({cx + r * std::cos(angle), cy + r * std::sin(angle)});
+  }
 
-    float x1 = cx + r1 * std::cos(angle1);
-    float y1 = cy + r1 * std::sin(angle1);
-    float x2 = cx + r2 * std::cos(angle2);
-    float y2 = cy + r2 * std::sin(angle2);
+  // --- Yıldızı doldur: bounding box + inside test ---
+  float minX = cx - outerRadius, maxX = cx + outerRadius;
+  float minY = cy - outerRadius, maxY = cy + outerRadius;
 
-    // Çizgi boyunca renk interpolasyonu
-    int steps = static_cast<int>(std::hypot(x2 - x1, y2 - y1));
-    for (int s = 0; s <= steps; ++s) {
-      float t = steps > 0 ? static_cast<float>(s) / steps : 0.0f;
-      SDL_Color c = interpolateColor(startColor, endColor, t, alpha);
-      int px = static_cast<int>(x1 + (x2 - x1) * t);
-      int py = static_cast<int>(y1 + (y2 - y1) * t);
-      SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
-      SDL_RenderPoint(renderer, px, py);
+  for (int y = minY; y <= maxY; y++) {
+    for (int x = minX; x <= maxX; x++) {
+      // Nokta yıldız içinde mi? (Winding rule)
+      bool inside = false;
+      for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
+        float xi = vertices[i].x, yi = vertices[i].y;
+        float xj = vertices[j].x, yj = vertices[j].y;
+
+        bool intersect = ((yi > y) != (yj > y)) &&
+                         (x < (xj - xi) * (y - yi) / (yj - yi + 0.0001f) + xi);
+
+        if (intersect) inside = !inside;
+      }
+
+      if (inside) {
+        // merkez → kenar gradient
+        float dist = sqrtf((x - cx)*(x - cx) + (y - cy)*(y - cy));
+        float t = dist / outerRadius;
+        SDL_Color c = interpolateColor(startColor, endColor, t, alpha);
+        SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+        SDL_RenderDrawPoint(renderer, x, y);
+      }
     }
   }
 
+  // --- Dış hatları çiz (net, keskin) ---
+  SDL_Color outline = {255, 255, 255, alpha};
+  SDL_SetRenderDrawColor(renderer, outline.r, outline.g, outline.b, outline.a);
+  for (int i = 0; i < vertices.size(); ++i) {
+    int next = (i + 1) % vertices.size();
+    SDL_RenderDrawLine(renderer, vertices[i].x, vertices[i].y,
+                       vertices[next].x, vertices[next].y);
+  }
+
+  // --- Harfi çiz (tam ortada) ---
   drawLetter(renderer, font, letter, cx, cy, size, alpha);
 }
 

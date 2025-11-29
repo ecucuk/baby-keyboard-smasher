@@ -1,0 +1,11 @@
+{
+    "cmake.generator": "Ninja",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureSettings": {
+        "CMAKE_BUILD_TYPE": "Debug"
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/BabySmasherGame",
+    "C_Cpp.default.includePath": [
+        "/opt/homebrew/include/**"
+    ]
+}

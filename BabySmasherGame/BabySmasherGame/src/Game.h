@@ -8,8 +8,10 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 
 #include "IShape.h"
@@ -26,11 +28,15 @@ class Game {
   SDL_Renderer* m_renderer{nullptr};
   TTF_Font* m_font{nullptr};
   SDL_Texture* m_backgroundTexture{nullptr};
+  Mix_Chunk* m_helloSound{nullptr};
+  Mix_Chunk* m_goodbyeSound{nullptr};
+  Mix_Chunk* m_popSound{nullptr};
 
   std::vector<std::unique_ptr<gui::shape::IShape>> m_shapes{};
   bool m_running{};
   int m_screenWidth{};
   int m_screenHeight{};
+  float m_bgDimAlpha{0.0f};
   std::unique_ptr<gui::shape::ShapeFactory> m_factory{};
 
  public:
