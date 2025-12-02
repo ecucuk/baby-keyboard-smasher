@@ -25,29 +25,6 @@ Proje **tamamen C++ + SDL2** ile geliştirilmiştir ve **macOS, Linux ve Windows
 
 ---
 
-## 📁 Proje Yapısı
-
-BabySmasherGame/
-├── CMakeLists.txt
-├── README.md
-├── BabySmasherGame/
-│   └── src/
-│       ├── main.cpp
-│       ├── Game.cpp
-│       ├── Shapes.cpp
-│       ├── ShapesFactory.cpp
-└── assets/
-├── font/
-│   └── OpenSans-Bold.ttf
-├── sounds/
-│   └── pop.wav
-└── voices/
-├── hello.wav
-└── goodbye.wav
-
-````
----
-
 # 🔧 Gereksinimler
 
 - **CMake 3.16+**
@@ -154,8 +131,6 @@ cmake --build build --config Release
 
 # **🔠 Font Desteği**
 
-  
-
 Yol:
 
 ```
@@ -184,7 +159,6 @@ assets/font/OpenSans-Bold.ttf
 - Şekiller **3 saniye içinde fade-out olur**
     
 - Maksimum **29 aktif şekil**
-    
 
 ---
 
