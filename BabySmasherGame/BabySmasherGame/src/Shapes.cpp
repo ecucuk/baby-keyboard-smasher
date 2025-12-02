@@ -113,7 +113,7 @@ void Star::draw(SDL_Renderer* renderer, TTF_Font* font) {
     for (int x = minX; x <= maxX; x++) {
       // Nokta yıldız içinde mi? (Winding rule)
       bool inside = false;
-      for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
+      for (size_t i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
         float xi = vertices[i].x, yi = vertices[i].y;
         float xj = vertices[j].x, yj = vertices[j].y;
 
@@ -148,3 +148,4 @@ void Star::draw(SDL_Renderer* renderer, TTF_Font* font) {
 }
 
 }  // namespace game::gui::shape
+

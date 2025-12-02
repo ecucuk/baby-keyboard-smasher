@@ -1,0 +1,91 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    // =========================
+    // 🍎 macOS (Apple Silicon - ARM64)
+    // =========================
+    {
+      "name": "BabySmasherGame (macOS ARM64)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/BabySmasherGame/build/Debug/BabySmasherGame.app/Contents/MacOS/BabySmasherGame",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    },
+
+    // =========================
+    // 🍎 macOS (Intel x86_64)
+    // =========================
+    {
+      "name": "BabySmasherGame (macOS x86_64)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/BabySmasherGame/build_x86/Debug/BabySmasherGame.app/Contents/MacOS/BabySmasherGame",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    },
+
+    // =========================
+    // 🐧 Linux (GDB)
+    // =========================
+    {
+      "name": "BabySmasherGame (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/BabySmasherGame/build/BabySmasherGame",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for GDB",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+
+    // =========================
+    // 🪟 Windows (Visual Studio - MSVC)
+    // =========================
+    {
+      "name": "BabySmasherGame (Windows MSVC)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/BabySmasherGame/build/Release/BabySmasherGame.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true
+    },
+
+    // =========================
+    // 🪟 Windows (MinGW - GDB)
+    // =========================
+    {
+      "name": "BabySmasherGame (Windows MinGW)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/BabySmasherGame/build/BabySmasherGame.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb"
+    }
+
+  ]
+}
